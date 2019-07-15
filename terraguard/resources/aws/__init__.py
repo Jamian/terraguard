@@ -1,6 +1,7 @@
 from terraguard.resources.aws import aws_ec2
 from terraguard.resources.aws import aws_ecr
 from terraguard.resources.aws import aws_elb
+from terraguard.resources.aws import aws_iam
 from terraguard.resources.aws import aws_lb
 from terraguard.resources.aws import aws_sqs
 from terraguard.resources.aws import aws_vpc
@@ -13,6 +14,7 @@ class AWSResourceManager:
         self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_elb.__dict__.items() if isinstance(cls, type)]))
         self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_ec2.__dict__.items() if isinstance(cls, type)]))
         self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_ecr.__dict__.items() if isinstance(cls, type)]))
+        self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_iam.__dict__.items() if isinstance(cls, type)]))
         self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_lb.__dict__.items() if isinstance(cls, type)]))
         self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_sqs.__dict__.items() if isinstance(cls, type)]))
         self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_vpc.__dict__.items() if isinstance(cls, type)]))
