@@ -2,7 +2,7 @@ import click
 import crayons
 import json
 import os
-import subprocess
+import subprocess   # nosec: this is controlled enough to ignore warnings and we need it to call Terraform
 import yaml
 
 from terraguard.resources.aws import AWSResourceManager
