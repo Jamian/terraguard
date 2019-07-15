@@ -4,16 +4,16 @@ from terraguard.resources.aws.resource import Resource
 
 def test_must_not_contain_validator_with_correct_config_returns_empty_violations():
     rule = {
-        'expression': 'tags',
+        'expression': 'Tags',
         'must_not_contain': ['TestTag']
     }
 
-    lookup_key = 'tags'
+    lookup_key = 'Tags'
 
     config = {
         'address': 'test_address',
         'values': {
-            'tags': {
+            'Tags': {
                 'AnotherTag': 'Boop'
             }
         }
@@ -27,16 +27,16 @@ def test_must_not_contain_validator_with_correct_config_returns_empty_violations
 
 def test_must_not_contain_validator_with_bad_config_returns_expected_violations():
     rule = {
-        'expression': 'tags',
+        'expression': 'Tags',
         'must_not_contain': ['TestTag']
     }
 
-    lookup_key = 'tags'
+    lookup_key = 'Tags'
 
     config = {
         'address': 'test_address',
         'values': {
-            'tags': {
+            'Tags': {
                 'AnotherTag': 'Boop',
                 'TestTag': 'Boop'
             }
@@ -46,17 +46,17 @@ def test_must_not_contain_validator_with_bad_config_returns_expected_violations(
     resource.resource_type = 'testresource'
 
     must_not_contain(rule, lookup_key, resource)
-    assert(resource.violations == {'test_address.must_not_contain': ['Found tags [TestTag] defined in testresource']})
+    assert(resource.violations == {'test_address.must_not_contain': ['Found Tags [TestTag] defined in testresource']})
 
 
 
 def test_must_not_contain_validator_with_bad_config_with_no_key_returns_expected_violations():
     rule = {
-        'expression': 'tags',
+        'expression': 'Tags',
         'must_not_contain': ['TestTag']
     }
 
-    lookup_key = 'tags'
+    lookup_key = 'Tags'
 
     config = {
         'address': 'test_address',

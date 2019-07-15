@@ -11,7 +11,7 @@ def must_not_contain(rule, lookup_key, resource):
             continue
         if item in resource.config['values'][lookup_key]:
             error_message = 'Found {lookup_key} [{item}] defined in {resource_type}'.format(
-                lookup_key=lookup_key,
+                lookup_key=lookup_key.capitalize(),
                 item=item,
                 resource_type=resource.resource_type
             )
