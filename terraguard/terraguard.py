@@ -1,10 +1,8 @@
 import click
 import crayons
-import importlib
 import json
-import logging
 import os
-import subprocess  # nosec: this is controlled enough to ignore warnings and we need it to call Terraform
+import subprocess   # nosec: this is controlled enough to ignore warnings and we need it to call Terraform
 import yaml
 
 from terraguard.resources.aws import AWSResourceManager
@@ -19,9 +17,9 @@ def print_results(resources):
     print(crayons.yellow('The following violations have been found:'))
     for resource in resources:
         for address, violation in resource.violations.items():
-            print(crayons.cyan(f'    {address}:'))
+            print(crayons.cyan('    {address}:'.format(address=address)))
             for violation in violation:
-                print(crayons.red(f'        {violation}'))
+                print(crayons.red('        {violation}'.format(violation=violation)))
                 total_violations += 1
     print('')
     print('----------------------------------------------------------------')
@@ -78,7 +76,7 @@ def validate(plan_file, out):
 
     for resource in planned_values_resources:
         address = resource['address']
-        print(crayons.green(f'Analyzing {address}'))
+        print(crayons.green('Analyzing {address}'.format(address=address)))
         resource_type = resource["address"].split('.')[0]
 
         resource_obj = aws_resource_manager.get_resource(resource_type, resource)

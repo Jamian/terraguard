@@ -25,4 +25,5 @@ class AWSResourceManager:
 
             return self.class_map[resource_type](terraform_resource_config)
         except KeyError:
-            raise NotImplementedError(f'Trying to analyze resource [{resource_type}] that is not supported.')
+            raise NotImplementedError('Trying to analyze resource [{resource_type}] that is not supported.'.format(
+                resource_type=resource_type))
