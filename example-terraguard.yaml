@@ -1,0 +1,16 @@
+rulesets:
+  global:
+    - expression: tags
+      must_contain:
+        - Customer
+        - Service
+  aws_instance:
+    - expression: tags
+      must_contain:
+        - DataType
+  aws_sqs_queue:
+    - expression: tags
+      must_contain:
+        - DataType
+      must_equal:
+        DataType: ['PCI', 'NA', 'PII']
