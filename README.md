@@ -9,6 +9,7 @@ ___
 
 ### Table of Contents  
 [Getting Started](#getting-started)  
+&nbsp;&nbsp;&nbsp;&nbsp;[Configuration](#configuration)   
 [Development](#development)  
 &nbsp;&nbsp;&nbsp;&nbsp;[Manual Testing](#testing-manually)  
 &nbsp;&nbsp;&nbsp;&nbsp;[Unit Testing](#unit-testing)
@@ -28,6 +29,37 @@ rulesets:
   * This will run a `terraform plan` for you and output the contents to a file which will then be migrated to JSON and loaded into the tool.
   * Once the JSON is loaded into memory, the resources will be validated against your rulesets.
   * You'll hopefully see no errors! :smile: 
+
+## Configuration
+`rulesets`</br>
+This is loaded in as `dict` where each key must be a valid Terraform resource. When validating the plan this is used to allow granular, unique rulesets per resources. If you would like to set a global ruleset the reserved ruleset key `global` can be used.
+ 
+`expression`<br/>
+The `expression` is the key of the attribute on the Terraform resource, as defined in the plan output. For example `tags` or `private_subnet_ids` would both be valid expressions. Note that expressions defined in the `global` ruleset must apply accross all resources, across all supported providers.
+
+### Validators
+`must_contain`<br/>
+When defined, `must_contain` will assert that the resource attribute being checked contains the given stings in the list.
+
+| Supported Type | Example |
+|----------------|---------|
+| `list`| <pre>- expression: tags<br/>  must_contain:<br/>    - Name</pre> |
+
+`must_not_contain`<br/>
+When defined, `must_not_contain` will assert that the resource attribute being checked does not contain the given strings in the list.
+
+| Supported Type | Example |
+|----------------|---------|
+| `list`| <pre>- expression: tags<br/>  must_not_contain:<br/>    - Name</pre> |
+
+`must_equal`<br/>
+When defined, `must_equal` will assert that the resource attribute being checked matched the given value.
+
+| Supported Type | Example |
+|----------------|---------|
+| `str`| <pre>- expression: assign_ipv6_address_on_creation<br/>  must_equal: true</pre> |
+| `dict`| <pre>- expression: tags<br/>  must_equal: <br/>  Terraformed: True</pre> |
+
 
 # Development
 

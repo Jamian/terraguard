@@ -1,75 +1,10 @@
 from terraguard.resources.aws.resource import Resource
-from terraguard.validators import must_not_contain
+from terraguard.validators import must_equal, must_not_contain
 
 
 class AWSCustomerGateway(Resource):
 
     resource_type = 'aws_customer_gateway'
-    taggable = True
-
-    def __init__(self, config):
-        self.violations = {}
-        super().__init__(config)
-
-    def validate(self, rulesets):
-        return super().validate(rulesets)
-
-
-class AWSDefaultNetworkACL(Resource):
-
-    resource_type = 'aws_default_network_acl'
-    taggable = True
-
-    def __init__(self, config):
-        self.violations = {}
-        super().__init__(config)
-
-    def validate(self, rulesets):
-        return super().validate(rulesets)
-
-
-class AWSDefaultRouteTable(Resource):
-
-    resource_type = 'aws_default_route_table'
-    taggable = True
-
-    def __init__(self, config):
-        self.violations = {}
-        super().__init__(config)
-
-    def validate(self, rulesets):
-        return super().validate(rulesets)
-
-
-class AWSDefaultSubnet(Resource):
-
-    resource_type = 'aws_default_subnet'
-    taggable = True
-
-    def __init__(self, config):
-        self.violations = {}
-        super().__init__(config)
-
-    def validate(self, rulesets):
-        return super().validate(rulesets)
-
-
-class AWSDefaultVPC(Resource):
-
-    resource_type = 'aws_default_vpc'
-    taggable = True
-
-    def __init__(self, config):
-        self.violations = {}
-        super().__init__(config)
-
-    def validate(self, rulesets):
-        return super().validate(rulesets)
-
-
-class AWSDefaultVPCDHCPOptions(Resource):
-
-    resource_type = 'aws_default_vpc_dhcp_options'
     taggable = True
 
     def __init__(self, config):
@@ -306,6 +241,14 @@ class AWSSubnet(Resource):
         super().__init__(config)
 
     def validate(self, rulesets):
+        if self.resource_type in rulesets:
+            ruleset = rulesets[self.resource_type]
+            for i in range(len(ruleset)):
+                rule = ruleset[i]
+                if rule['expression'] == 'assign_ipv6_address_on_creation':
+                    if 'must_equal' in rule:
+                        must_equal(rule, 'assign_ipv6_address_on_creation', self)
+
         return super().validate(rulesets)
 
 
@@ -319,6 +262,14 @@ class AWSVPC(Resource):
         super().__init__(config)
 
     def validate(self, rulesets):
+        if self.resource_type in rulesets:
+            ruleset = rulesets[self.resource_type]
+            for i in range(len(ruleset)):
+                rule = ruleset[i]
+                if rule['expression'] == 'assign_ipv6_address_on_creation':
+                    if 'must_equal' in rule:
+                        must_equal(rule, 'assign_ipv6_address_on_creation', self)
+
         return super().validate(rulesets)
 
 
@@ -534,6 +485,71 @@ class AWSVPNGatewayRoutePropagation(Resource):
 
     resource_type = 'aws_vpn_gateway_route_propagation'
     taggable = False
+
+    def __init__(self, config):
+        self.violations = {}
+        super().__init__(config)
+
+    def validate(self, rulesets):
+        return super().validate(rulesets)
+
+
+class AWSDefaultNetworkACL(Resource):
+
+    resource_type = 'aws_default_network_acl'
+    taggable = True
+
+    def __init__(self, config):
+        self.violations = {}
+        super().__init__(config)
+
+    def validate(self, rulesets):
+        return super().validate(rulesets)
+
+
+class AWSDefaultRouteTable(Resource):
+
+    resource_type = 'aws_default_route_table'
+    taggable = True
+
+    def __init__(self, config):
+        self.violations = {}
+        super().__init__(config)
+
+    def validate(self, rulesets):
+        return super().validate(rulesets)
+
+
+class AWSDefaultSubnet(AWSSubnet):
+
+    resource_type = 'aws_default_subnet'
+    taggable = True
+
+    def __init__(self, config):
+        self.violations = {}
+        super().__init__(config)
+
+    def validate(self, rulesets):
+        return super().validate(rulesets)
+
+
+class AWSDefaultVPC(AWSVPC):
+
+    resource_type = 'aws_default_vpc'
+    taggable = True
+
+    def __init__(self, config):
+        self.violations = {}
+        super().__init__(config)
+
+    def validate(self, rulesets):
+        return super().validate(rulesets)
+
+
+class AWSDefaultVPCDHCPOptions(Resource):
+
+    resource_type = 'aws_default_vpc_dhcp_options'
+    taggable = True
 
     def __init__(self, config):
         self.violations = {}
