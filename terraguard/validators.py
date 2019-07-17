@@ -38,6 +38,7 @@ def must_equal(rule, lookup_key, resource):
             if not resource.config['values'][lookup_key]:
                 continue
             # Lookup key exists so let's look at each individual item
+            print(resource.config['values'][lookup_key])
             if item in resource.config['values'][lookup_key]:
                 tf_value = resource.config['values'][lookup_key][item]
                 if tf_value not in options:
@@ -63,8 +64,8 @@ def must_equal(rule, lookup_key, resource):
         expected_value = rule[MUST_EQUAL]
         tf_value = resource.config['values'][lookup_key]
         if tf_value is not expected_value:
-            error_message = '(Incorrect value [{lookup_key}] must equal \'{expected_value}\' but found \'{tf_value}\''.format(
-                lookup_key=lookup_key.capitalize(),
+            error_message = 'Incorrect value [{lookup_key}] must equal \'{expected_value}\' but found \'{tf_value}\''.format(
+                lookup_key=lookup_key,
                 expected_value=expected_value,
                 tf_value=tf_value
             )

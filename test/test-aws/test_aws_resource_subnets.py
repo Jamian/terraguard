@@ -18,7 +18,7 @@ def test_subnet_ipv6_rulesets():
     subnet = AWSSubnet(terraform_config)
     subnet.validate(rulesets)
     assert len(subnet.violations) == 1
-    assert subnet.violations == {'someaddress.must_equal': ["(Incorrect value [Assign_ipv6_address_on_creation] must equal 'False' but found 'True'"]}
+    assert subnet.violations == {'someaddress.must_equal': ["Incorrect value [assign_ipv6_address_on_creation] must equal 'False' but found 'True'"]}
 
     rulesets = {'aws_subnet': [{
         'expression': 'assign_ipv6_address_on_creation',
@@ -41,7 +41,7 @@ def test_subnet_ipv6_rulesets():
     subnet = AWSSubnet(terraform_config)
     subnet.validate(rulesets)
     assert len(subnet.violations) == 1
-    assert subnet.violations == {'someaddress.must_equal': ["(Incorrect value [Assign_ipv6_address_on_creation] must equal 'False' but found 'True'"]}
+    assert subnet.violations == {'someaddress.must_equal': ["Incorrect value [assign_ipv6_address_on_creation] must equal 'False' but found 'True'"]}
 
 
 def test_default_subnet_ipv6_rulesets():
@@ -61,4 +61,4 @@ def test_default_subnet_ipv6_rulesets():
     subnet = AWSDefaultSubnet(terraform_config)
     subnet.validate(rulesets)
     assert len(subnet.violations) == 1
-    assert subnet.violations == {'someaddress.must_equal': ["(Incorrect value [Assign_ipv6_address_on_creation] must equal 'False' but found 'True'"]}
+    assert subnet.violations == {'someaddress.must_equal': ["Incorrect value [assign_ipv6_address_on_creation] must equal 'False' but found 'True'"]}
