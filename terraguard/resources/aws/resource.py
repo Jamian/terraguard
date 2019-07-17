@@ -13,7 +13,7 @@ class Resource:
         self.name = self.config['address']
 
     def validate(self, rulesets):
-        rulesets_to_apply = ['global']
+        rulesets_to_apply = ['global'] if 'global' in rulesets else []
         if self.resource_type in rulesets:
             rulesets_to_apply.append(self.resource_type)
 
