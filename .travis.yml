@@ -7,6 +7,10 @@ install:
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
   - pip install -e .
-script:
-  - pytest
-  - bandit -r terraguard
+
+jobs:
+  include:
+    - stage: Unit Tests
+    - script: pytest
+    - stage: Bandit Tests
+      script: bandit -t terraguard
