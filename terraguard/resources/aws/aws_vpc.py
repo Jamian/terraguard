@@ -262,6 +262,14 @@ class AWSVPC(Resource):
         super().__init__(config)
 
     def validate(self, rulesets):
+        if self.resource_type in rulesets:
+            ruleset = rulesets[self.resource_type]
+            for i in range(len(ruleset)):
+                rule = ruleset[i]
+                if rule['expression'] == 'assign_ipv6_address_on_creation':
+                    if 'must_equal' in rule:
+                        must_equal(rule, 'assign_ipv6_address_on_creation', self)
+
         return super().validate(rulesets)
 
 
@@ -525,7 +533,7 @@ class AWSDefaultSubnet(AWSSubnet):
         return super().validate(rulesets)
 
 
-class AWSDefaultVPC(Resource):
+class AWSDefaultVPC(AWSVPC):
 
     resource_type = 'aws_default_vpc'
     taggable = True
