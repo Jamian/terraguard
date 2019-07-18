@@ -219,14 +219,16 @@ class AWSSecurityGroupRule(Resource):
         super().__init__(config)
 
     def validate(self, rulesets):
-        # Custom validation content
         if self.resource_type in rulesets:
-            ruleset = rulesets[self.resource_type]
-            for i, _ in enumerate(ruleset):
-                rule = ruleset[i]
-                if rule['expression'] == 'cidr_blocks':
-                    if 'must_not_contain' in rule:
-                        must_not_contain(rule, 'cidr_blocks', self)
+            if 'attributes' in rulesets[self.resource_type]:
+                key = 'cidr_blocks'
+                if key in rulesets[self.resource_type]['attributes']:
+                    for rule in rulesets[self.resource_type]['attributes'][key]:
+                        rule_definition = rulesets[self.resource_type]['attributes'][key][rule]
+                        if rule == 'must_not_contain':
+                            must_not_contain(rule_definition, key, self)
+                        elif rule == 'must_equal':
+                            must_equal(rule_definition, key, self)
 
         super().validate(rulesets)
 
@@ -242,12 +244,15 @@ class AWSSubnet(Resource):
 
     def validate(self, rulesets):
         if self.resource_type in rulesets:
-            ruleset = rulesets[self.resource_type]
-            for i in range(len(ruleset)):
-                rule = ruleset[i]
-                if rule['expression'] == 'assign_ipv6_address_on_creation':
-                    if 'must_equal' in rule:
-                        must_equal(rule, 'assign_ipv6_address_on_creation', self)
+            if 'attributes' in rulesets[self.resource_type]:
+                key = 'assign_ipv6_address_on_creation'
+                if key in rulesets[self.resource_type]['attributes']:
+                    for rule in rulesets[self.resource_type]['attributes'][key]:
+                        rule_definition = rulesets[self.resource_type]['attributes'][key][rule]
+                        if rule == 'must_not_contain':
+                            must_not_contain(rule_definition, key, self)
+                        elif rule == 'must_equal':
+                            must_equal(rule_definition, key, self)
 
         return super().validate(rulesets)
 
@@ -263,12 +268,15 @@ class AWSVPC(Resource):
 
     def validate(self, rulesets):
         if self.resource_type in rulesets:
-            ruleset = rulesets[self.resource_type]
-            for i in range(len(ruleset)):
-                rule = ruleset[i]
-                if rule['expression'] == 'assign_ipv6_address_on_creation':
-                    if 'must_equal' in rule:
-                        must_equal(rule, 'assign_ipv6_address_on_creation', self)
+            if 'attributes' in rulesets[self.resource_type]:
+                key = 'assign_ipv6_address_on_creation'
+                if key in rulesets[self.resource_type]['attributes']:
+                    for rule in rulesets[self.resource_type]['attributes'][key]:
+                        rule_definition = rulesets[self.resource_type]['attributes'][key][rule]
+                        if rule == 'must_not_contain':
+                            must_not_contain(rule_definition, key, self)
+                        elif rule == 'must_equal':
+                            must_equal(rule_definition, key, self)
 
         return super().validate(rulesets)
 
