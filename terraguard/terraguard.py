@@ -50,8 +50,6 @@ def generate_plan():
 @click.option('--out', required=False, help='Output the results to a file')
 def validate(plan_file, out):
     """Check the plan for any defined rulesets and policies"""
-    violations = []
-
     try:
         config = yaml.safe_load(open(os.path.join(os.getcwd(), 'terraguard.yaml')))
     except FileNotFoundError as exception:

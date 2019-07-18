@@ -4,10 +4,7 @@ from terraguard.resources.aws.resource import Resource
 
 def test_must_equal_validator_with_correct_config_returns_empty_violations():
     rule = {
-        'expression': 'tags',
-        'must_equal': {
-            'TestTag': 'Bloop'
-        }
+        'TestTag': 'Bloop'
     }
 
     lookup_key = 'tags'
@@ -29,10 +26,7 @@ def test_must_equal_validator_with_correct_config_returns_empty_violations():
 
 def test_must_equal_validator_with_bad_tag_value_returns_empty_violations():
     rule = {
-        'expression': 'tags',
-        'must_equal': {
-            'TestTag': 'Bleep'
-        }
+        'TestTag': 'Bleep'
     }
 
     lookup_key = 'tags'
@@ -54,10 +48,7 @@ def test_must_equal_validator_with_bad_tag_value_returns_empty_violations():
 
 def test_must_equal_validator_with_dict():
     rule = {
-        'expression': 'tags',
-        'must_equal': {
-            'TestTag': 'Bleep'
-        }
+        'TestTag': 'Bleep'
     }
 
     lookup_key = 'tags'
@@ -78,10 +69,7 @@ def test_must_equal_validator_with_dict():
 
 
 def test_must_equal_validator_with_str():
-    rule = {
-        'expression': 'test',
-        'must_equal': 'testvalue'
-    }
+    rule = 'testvalue'
 
     lookup_key = 'test'
 
@@ -95,5 +83,4 @@ def test_must_equal_validator_with_str():
     resource.resource_type = 'testresource'
 
     must_equal(rule, lookup_key, resource)
-    print(resource.violations)
     assert(resource.violations == {'test_address.must_equal': ["Incorrect value [test] must equal 'testvalue' but found 'foo'"]})

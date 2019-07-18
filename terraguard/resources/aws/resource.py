@@ -1,4 +1,4 @@
-from terraguard.validators import must_contain, must_equal
+from terraguard.validators import must_contain, must_not_contain, must_equal
 
 
 class Resource:
@@ -17,12 +17,14 @@ class Resource:
         if self.resource_type in rulesets:
             rulesets_to_apply.append(self.resource_type)
 
-        for ruleset_key in rulesets_to_apply:
-            for i, _ in enumerate(rulesets[ruleset_key]):
-                for i, _ in enumerate(rulesets[ruleset_key]):
-                    rule = rulesets[ruleset_key][i]
-                    if rule['expression'] == 'tags' and self.taggable:
-                        if 'must_contain' in rule:
-                            must_contain(rule, 'tags', self)
-                        if 'must_equal' in rule:
-                            must_equal(rule, 'tags', self)
+        for resource in rulesets_to_apply:
+            if 'attributes' in rulesets[resource]:
+                if 'tags' in rulesets[resource]['attributes'] and self.taggable:
+                    for rule in rulesets[resource]['attributes']['tags']:
+                        rule_definition = rulesets[resource]['attributes']['tags'][rule]
+                        if rule == 'must_contain':
+                            must_contain(rule_definition, 'tags', self)
+                        elif rule == 'must_not_contain':
+                            must_not_contain(rule_definition, 'tags', self)
+                        elif rule == 'must_equal':
+                            must_equal(rule_definition, 'tags', self)
