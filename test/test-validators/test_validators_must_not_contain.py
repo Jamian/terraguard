@@ -44,5 +44,5 @@ def test_must_not_contain_validator_with_bad_config_returns_expected_violations(
     assert('test_address.must_not_contain') in resource.violations
     assert(len(resource.violations['test_address.must_not_contain']) == len(rule))
     for violation, expected_violation in zip(resource.violations['test_address.must_not_contain'], rule):
-        assert(violation == 'Found Tags [{expected_violation}] defined in testresource'.format(expected_violation=expected_violation))
+        assert(violation == 'Found tags [{expected_violation}] defined in testresource'.format(expected_violation=expected_violation))
 
