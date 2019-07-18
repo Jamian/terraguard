@@ -21,9 +21,10 @@ ___
 ```
 rulesets:
   aws_instance:
-    - expression: tags
-      must_contain:
-        - Name
+    attributes:
+      tags:
+        must_contain:
+          - Name
 ```
 3. Run `terraguard`
   * This will run a `terraform plan` for you and output the contents to a file which will then be migrated to JSON and loaded into the tool.
@@ -43,22 +44,22 @@ When defined, `must_contain` will assert that the resource attribute being check
 
 | Supported Type | Example |
 |----------------|---------|
-| `list`| <pre>- expression: tags<br/>  must_contain:<br/>    - Name</pre> |
+| `list`| <pre>- attributes:<br/>   tags<br/>    must_contain:<br/>      - Name</pre> |
 
 `must_not_contain`<br/>
 When defined, `must_not_contain` will assert that the resource attribute being checked does not contain the given strings in the list.
 
 | Supported Type | Example |
 |----------------|---------|
-| `list`| <pre>- expression: tags<br/>  must_not_contain:<br/>    - Name</pre> |
+| `list`| <pre>- attributes:<br/>   tags<br/>    must_not_contain:<br/>      - Name</pre> |
 
 `must_equal`<br/>
 When defined, `must_equal` will assert that the resource attribute being checked matched the given value.
 
 | Supported Type | Example |
 |----------------|---------|
-| `str`| <pre>- expression: assign_ipv6_address_on_creation<br/>  must_equal: true</pre> |
-| `dict`| <pre>- expression: tags<br/>  must_equal: <br/>    Terraformed: True</pre> |
+| `str`| <pre>- attributes:<br/>   assign_ipv6_address_on_creation:<br/>      must_equal:true</pre> |
+| `dict`| <pre>- attributes:<br/>   tags:<br/>    must_equal: <br/>      Terraformed: True</pre> |
 
 
 # Development
