@@ -15,4 +15,4 @@ jobs:
     - stage: Bandit Tests
       python: "3.6"
       install: pip install -r dev-requirements.txt
-      script: bandit -t terraguard
+      script: bandit -r terraguard
