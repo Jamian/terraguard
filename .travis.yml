@@ -10,7 +10,6 @@ install:
 
 jobs:
   include:
-    - stage: Unit Tests
     - script: pytest
     - stage: Bandit Tests
       script: bandit -t terraguard
