@@ -58,7 +58,7 @@ When defined, `must_equal` will assert that the resource attribute being checked
 | Supported Type | Example |
 |----------------|---------|
 | `str`| <pre>- expression: assign_ipv6_address_on_creation<br/>  must_equal: true</pre> |
-| `dict`| <pre>- expression: tags<br/>  must_equal: <br/>  Terraformed: True</pre> |
+| `dict`| <pre>- expression: tags<br/>  must_equal: <br/>    Terraformed: True</pre> |
 
 
 # Development
