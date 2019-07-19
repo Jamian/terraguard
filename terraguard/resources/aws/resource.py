@@ -18,13 +18,17 @@ class Resource:
             rulesets_to_apply.append(self.resource_type)
 
         for resource in rulesets_to_apply:
-            if 'attributes' in rulesets[resource]:
-                if 'tags' in rulesets[resource]['attributes'] and self.taggable:
-                    for rule in rulesets[resource]['attributes']['tags']:
-                        rule_definition = rulesets[resource]['attributes']['tags'][rule]
-                        if rule == 'must_contain':
-                            must_contain(rule_definition, 'tags', self)
-                        elif rule == 'must_not_contain':
-                            must_not_contain(rule_definition, 'tags', self)
-                        elif rule == 'must_equal':
-                            must_equal(rule_definition, 'tags', self)
+            ruleset = rulesets[resource]
+            for key in ruleset:
+                if key == 'must_contain':
+                    must_contain(ruleset['must_contain'], self)
+                if key == 'attributes':
+                    if 'tags' in ruleset['attributes'] and self.taggable:
+                        for rule in ruleset['attributes']['tags']:
+                            rule_definition = ruleset['attributes']['tags'][rule]
+                            if rule == 'must_contain':
+                                must_contain(rule_definition, self, 'tags')
+                            elif rule == 'must_not_contain':
+                                must_not_contain(rule_definition, self, 'tags')
+                            elif rule == 'must_equal':
+                                must_equal(rule_definition, self, 'tags')

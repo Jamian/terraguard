@@ -1,7 +1,7 @@
 MUST_EQUAL = 'must_equal'
 
 
-def must_equal(rule, lookup_key, resource):
+def must_equal(rule, resource, lookup_key=None):
     address = resource.config['address']
     full_address = '{address}.{validator}'.format(
         address=address,

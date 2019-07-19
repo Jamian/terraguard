@@ -226,9 +226,9 @@ class AWSSecurityGroupRule(Resource):
                     for rule in rulesets[self.resource_type]['attributes'][key]:
                         rule_definition = rulesets[self.resource_type]['attributes'][key][rule]
                         if rule == 'must_not_contain':
-                            must_not_contain(rule_definition, key, self)
+                            must_not_contain(rule_definition, self, key)
                         elif rule == 'must_equal':
-                            must_equal(rule_definition, key, self)
+                            must_equal(rule_definition, self, key)
 
         super().validate(rulesets)
 
@@ -250,9 +250,9 @@ class AWSSubnet(Resource):
                     for rule in rulesets[self.resource_type]['attributes'][key]:
                         rule_definition = rulesets[self.resource_type]['attributes'][key][rule]
                         if rule == 'must_not_contain':
-                            must_not_contain(rule_definition, key, self)
+                            must_not_contain(rule_definition, self, key)
                         elif rule == 'must_equal':
-                            must_equal(rule_definition, key, self)
+                            must_equal(rule_definition, self, key)
 
         return super().validate(rulesets)
 
@@ -274,9 +274,9 @@ class AWSVPC(Resource):
                     for rule in rulesets[self.resource_type]['attributes'][key]:
                         rule_definition = rulesets[self.resource_type]['attributes'][key][rule]
                         if rule == 'must_not_contain':
-                            must_not_contain(rule_definition, key, self)
+                            must_not_contain(rule_definition, self, key)
                         elif rule == 'must_equal':
-                            must_equal(rule_definition, key, self)
+                            must_equal(rule_definition, self, key)
 
         return super().validate(rulesets)
 

@@ -1,7 +1,7 @@
 MUST_NOT_CONTAIN = 'must_not_contain'
 
 
-def must_not_contain(rule, lookup_key, resource):
+def must_not_contain(rule, resource, lookup_key=None):
     address = resource.config['address']
     full_address = '{address}.{validator}'.format(
         address=address,
