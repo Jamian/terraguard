@@ -26,6 +26,10 @@ class AWSResource:
             for key in ruleset:
                 if key == 'must_contain':
                     must_contain(ruleset['must_contain'], self)
+                if key == 'must_not_contain':
+                    must_not_contain(ruleset['must_not_contain'], self)
+                if key == 'must_equal':
+                    must_equal(ruleset['must_equal'], self)
                 if key == 'attributes':
                     for attribute_key in ruleset['attributes']:
                         if attribute_key == 'tags' and not self.taggable:
