@@ -43,3 +43,8 @@ class AWSResource:
                                     must_not_contain(rule_definition, self, attribute_key)
                                 elif rule == 'must_equal':
                                     must_equal(rule_definition, self, attribute_key)
+
+    def add_violation(self, full_address, violation):
+        if full_address not in self.violations:
+            self.violations[full_address] = []
+        self.violations[full_address].append(violation)

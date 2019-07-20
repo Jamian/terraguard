@@ -4,6 +4,7 @@ MUST_NOT_CONTAIN = 'must_not_contain'
 
 
 def must_not_contain(rule, resource, attribute_name=None):
+    error_message = None
     address = resource.config['address']
     full_address = '{address}.{validator}'.format(
         address=address,
@@ -27,10 +28,6 @@ def must_not_contain(rule, resource, attribute_name=None):
                     item=item,
                     resource_type=resource.resource_type
                 )
-                if full_address not in resource.violations:
-                    resource.violations[full_address] = []
-                if error_message not in resource.violations[full_address]:
-                    resource.violations[full_address].append(error_message)
     elif isinstance(rule, str):
         if isinstance(resource.config['values'][attribute_name], list):
             for tf_value in resource.config['values'][attribute_name]:
@@ -40,10 +37,6 @@ def must_not_contain(rule, resource, attribute_name=None):
                         rule=rule,
                         resource_type=resource.resource_type
                     )
-                    if full_address not in resource.violations:
-                        resource.violations[full_address] = []
-                    if error_message not in resource.violations[full_address]:
-                        resource.violations[full_address].append(error_message)
         if isinstance(resource.config['values'][attribute_name], str):
             if rule in resource.config['values'][attribute_name]:
                 error_message = '[{attribute_name}] contains {rule} in defined in {resource_type}'.format(
@@ -51,7 +44,5 @@ def must_not_contain(rule, resource, attribute_name=None):
                     rule=rule,
                     resource_type=resource.resource_type
                 )
-                if full_address not in resource.violations:
-                    resource.violations[full_address] = []
-                if error_message not in resource.violations[full_address]:
-                    resource.violations[full_address].append(error_message)
+    if error_message:
+        resource.add_violation(full_address, error_message)
