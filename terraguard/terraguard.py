@@ -5,7 +5,7 @@ import os
 import subprocess   # nosec: this is controlled enough to ignore warnings and we need it to call Terraform
 import yaml
 
-from terraguard.resources.aws import AWSResourceManager
+from terraguard.resources.aws import AWSResource
 
 
 DEFAULT_PLAN_FILE_NAME = 'terraguard-plan.json'
@@ -70,14 +70,12 @@ def validate(plan_file, out):
 
     resources = []
 
-    aws_resource_manager = AWSResourceManager()
-
-    for resource in planned_values_resources:
-        address = resource['address']
+    for resource_config in planned_values_resources:
+        address = resource_config['address']
         print(crayons.green('Analyzing {address}'.format(address=address)))
-        resource_type = resource["address"].split('.')[0]
+        resource_type = resource_config["address"].split('.')[0]
 
-        resource_obj = aws_resource_manager.get_resource(resource_type, resource)
+        resource_obj = AWSResource(resource_type, resource_config)
         resource_obj.validate(config["rulesets"])
         resources.append(resource_obj)
 

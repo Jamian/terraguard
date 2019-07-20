@@ -1,68 +1,59 @@
 from terraguard.validators import must_contain
-from terraguard.resources.aws.resource import Resource
+from terraguard.resources.aws import AWSResource
 
 
 def test_must_contain_validator_with_correct_config_returns_empty_violations():
-    rule = ['TestTag']
+    rule = {
+        'tags': {
+            'TestTag': 'NA'
+        }
+    }
 
-    lookup_key = 'tags'
+    attribute_name = 'tags'
 
     config = {
-        'address': 'test_address',
+        'address': 'aws_s3_bucket',
         'values': {
             'tags': {
                 'TestTag': 'NA'
             }
         }
     }
-    resource = Resource(config)
-    resource.resource_type = 'testresource'
+    resource = AWSResource('aws_s3_bucket', config)
 
-    must_contain(rule, lookup_key, resource)
+    must_contain(rule, resource, attribute_name)
     assert(resource.violations == {})
 
 
-def test_must_contain_validator_with_bad_config_returns_expected_violations():
-    rule = ['TestTag', 'AnotherTag']
+def test_must_contain_validator_with_correct_resource_level_config_returns_empty_violations():
+    rule = 'tags'
 
-    lookup_key = 'tags'
+    attribute_name = 'tags'
 
     config = {
-        'address': 'test_address',
+        'address': 'aws_s3_bucket',
         'values': {
             'tags': {
-                'NotTestTag': 'NA',
+                'TestTag': 'NA'
             }
         }
     }
-    resource = Resource(config)
+    resource = AWSResource('aws_s3_bucket', config)
 
-    must_contain(rule, lookup_key, resource)
-    assert('test_address.must_contain') in resource.violations
-    assert(len(resource.violations['test_address.must_contain']) == len(rule))
-    for violation, expected_violation in zip(resource.violations['test_address.must_contain'], rule):
-        assert(violation == 'Missing Tags [{expected_violation}] defined in resource'.format(expected_violation=expected_violation))
+    must_contain(rule, resource, attribute_name)
+    assert(resource.violations == {})
 
 
-def test_must_contain_validator_with_bad_config_with_no_key_returns_expected_violations():
-    rule = ['TestTag']
-
-    lookup_key = 'tags'
+def test_must_contain_validator_null_value():
+    rule = 'tags'
 
     config = {
-        'address': 'test_address',
-        'values': {}
+        'address': 'aws_s3_bucket',
+        'values': {
+            'tags': None
+        }
     }
-    resource = Resource(config)
+    resource = AWSResource('aws_s3_bucket', config)
 
-    must_contain(rule, lookup_key, resource)
-    assert(len(resource.violations['test_address.must_contain']) == len(rule))
-    for violation, expected_violation in zip(resource.violations['test_address.must_contain'], rule):
-        assert(violation == 'Missing Tags block and [{expected_violation}] required defined in resource'.format(expected_violation=expected_violation))
-
-    # We also have to handle when the tag key exists but is a null value
-    config['values']['tags'] = None
-    must_contain(rule, lookup_key, resource)
-    assert(len(resource.violations['test_address.must_contain']) == len(rule))
-    for violation, expected_violation in zip(resource.violations['test_address.must_contain'], rule):
-        assert(violation == 'Null Tags block and [{expected_violation}] required defined in resource'.format(expected_violation=expected_violation))
+    must_contain(rule, resource)
+    assert(resource.violations == {'aws_s3_bucket.must_contain': ['Missing required [tags] attribute from aws_s3_bucket']})

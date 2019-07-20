@@ -1,20 +1,29 @@
+import crayons
+
 MUST_NOT_CONTAIN = 'must_not_contain'
 
 
-def must_not_contain(rule, lookup_key, resource):
+def must_not_contain(rule, resource, attribute_name=None):
     address = resource.config['address']
     full_address = '{address}.{validator}'.format(
         address=address,
         validator=MUST_NOT_CONTAIN)
+
+    if not attribute_name:
+        print(crayons.yellow('Trying to assert must_not_contain at a resource root level will not work.'))
+        print(crayons.yellow('    All planned resources have all values.'))
+        print(crayons.yellow('    Try using must_equal a null value instead.'))
+        return
+
     if isinstance(rule, list):
         for item in rule:
-            if lookup_key not in resource.config['values']:
+            if attribute_name not in resource.config['values']:
                 continue
-            if not resource.config['values'][lookup_key]:
+            if not resource.config['values'][attribute_name]:
                 continue
-            if item in resource.config['values'][lookup_key]:
-                error_message = 'Found {lookup_key} [{item}] defined in {resource_type}'.format(
-                    lookup_key=lookup_key,
+            if item in resource.config['values'][attribute_name]:
+                error_message = 'Found {attribute_name} [{item}] defined in {resource_type}'.format(
+                    attribute_name=attribute_name,
                     item=item,
                     resource_type=resource.resource_type
                 )
@@ -23,11 +32,11 @@ def must_not_contain(rule, lookup_key, resource):
                 if error_message not in resource.violations[full_address]:
                     resource.violations[full_address].append(error_message)
     elif isinstance(rule, str):
-        if isinstance(resource.config['values'][lookup_key], list):
-            for tf_value in resource.config['values'][lookup_key]:
+        if isinstance(resource.config['values'][attribute_name], list):
+            for tf_value in resource.config['values'][attribute_name]:
                 if rule == tf_value:
-                    error_message = 'Found {lookup_key} [{rule}] defined in {resource_type}'.format(
-                        lookup_key=lookup_key,
+                    error_message = 'Found {attribute_name} [{rule}] defined in {resource_type}'.format(
+                        attribute_name=attribute_name,
                         rule=rule,
                         resource_type=resource.resource_type
                     )

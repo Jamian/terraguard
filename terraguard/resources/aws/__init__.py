@@ -1,31 +1,45 @@
-from terraguard.resources.aws import aws_ec2
-from terraguard.resources.aws import aws_ecr
-from terraguard.resources.aws import aws_elb
-from terraguard.resources.aws import aws_iam
-from terraguard.resources.aws import aws_lb
-from terraguard.resources.aws import aws_sqs
-from terraguard.resources.aws import aws_vpc
+from terraguard.validators import must_contain, must_not_contain, must_equal
+from terraguard.resources.aws.taggable_resources import taggable_resources
 
 
-class AWSResourceManager:
+class AWSResource:
 
-    def __init__(self):
-        self.class_map = {}
-        self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_elb.__dict__.items() if isinstance(cls, type)]))
-        self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_ec2.__dict__.items() if isinstance(cls, type)]))
-        self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_ecr.__dict__.items() if isinstance(cls, type)]))
-        self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_iam.__dict__.items() if isinstance(cls, type)]))
-        self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_lb.__dict__.items() if isinstance(cls, type)]))
-        self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_sqs.__dict__.items() if isinstance(cls, type)]))
-        self.class_map.update(dict([(cls.resource_type, cls) for name, cls in aws_vpc.__dict__.items() if isinstance(cls, type)]))
+    name = ""
+    resource_type = 'resource'
+    taggable = False
 
-    def get_resource(self, resource_type, terraform_resource_config):
-        try:
-            # Quick fix for the multiple valid address types for load balancing v2.
-            if 'aws_alb' in resource_type:
-                resource_type = resource_type.replace('aws_alb', 'aws_lb')
+    def __init__(self, resource_type, config):
+        self.config = config
+        self.violations = {}
+        self.name = self.config['address']
 
-            return self.class_map[resource_type](terraform_resource_config)
-        except KeyError:
-            raise NotImplementedError('Trying to analyze resource [{resource_type}] that is not supported.'.format(
-                resource_type=resource_type))
+        self.resource_type = resource_type
+        if resource_type in taggable_resources:
+            self.taggable = True
+
+    def validate(self, rulesets):
+        rulesets_to_apply = ['global'] if 'global' in rulesets else []
+        if self.resource_type in rulesets:
+            rulesets_to_apply.append(self.resource_type)
+        for resource in rulesets_to_apply:
+            ruleset = rulesets[resource]
+            for key in ruleset:
+                if key == 'must_contain':
+                    must_contain(ruleset['must_contain'], self)
+                if key == 'must_not_contain':
+                    must_not_contain(ruleset['must_not_contain'], self)
+                if key == 'must_equal':
+                    must_equal(ruleset['must_equal'], self)
+                if key == 'attributes':
+                    for attribute_key in ruleset['attributes']:
+                        if attribute_key == 'tags' and not self.taggable:
+                            continue
+                        else:
+                            for rule in ruleset['attributes'][attribute_key]:
+                                rule_definition = ruleset['attributes'][attribute_key][rule]
+                                if rule == 'must_contain':
+                                    must_contain(rule_definition, self, attribute_key)
+                                elif rule == 'must_not_contain':
+                                    must_not_contain(rule_definition, self, attribute_key)
+                                elif rule == 'must_equal':
+                                    must_equal(rule_definition, self, attribute_key)
