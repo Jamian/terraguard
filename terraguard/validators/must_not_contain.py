@@ -44,3 +44,14 @@ def must_not_contain(rule, resource, attribute_name=None):
                         resource.violations[full_address] = []
                     if error_message not in resource.violations[full_address]:
                         resource.violations[full_address].append(error_message)
+        if isinstance(resource.config['values'][attribute_name], str):
+            if rule in resource.config['values'][attribute_name]:
+                error_message = '[{attribute_name}] contains {rule} in defined in {resource_type}'.format(
+                    attribute_name=attribute_name,
+                    rule=rule,
+                    resource_type=resource.resource_type
+                )
+                if full_address not in resource.violations:
+                    resource.violations[full_address] = []
+                if error_message not in resource.violations[full_address]:
+                    resource.violations[full_address].append(error_message)
