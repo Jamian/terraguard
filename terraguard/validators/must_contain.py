@@ -12,6 +12,15 @@ def resource_must_contain(rule, resource, full_address):
                 resource.violations[full_address] = []
             if error_message not in resource.violations[full_address]:
                 resource.violations[full_address].append(error_message)
+        elif not resource.config['values'][rule]:
+            error_message = 'Missing required [{rule}] attribute from {resource_type}'.format(
+                rule=rule,
+                resource_type=resource.resource_type
+            )
+            if full_address not in resource.violations:
+                resource.violations[full_address] = []
+            if error_message not in resource.violations[full_address]:
+                resource.violations[full_address].append(error_message)
 
 
 def attribute_must_contain(rule, resource, attribute_name, full_address):
