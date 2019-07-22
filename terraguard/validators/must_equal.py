@@ -3,27 +3,31 @@ MUST_EQUAL = 'must_equal'
 
 def resource_must_equal(rule, resource, full_address):
     error_message = None
-    for item, options in rule.items():
-        # Lookup key exists so let's look at each individual item
-        if item in resource.config['values']:
-            tf_value = resource.config['values'][item]
-            if tf_value == options:
-                continue
-            if tf_value not in options:
-                if isinstance(options, list):
-                    error_message = '[{item}] must match {options} but found \'{tf_value}\''.format(
-                        item=item,
-                        options=options,
-                        tf_value=tf_value
-                    )
+
+    if isinstance(rule, dict):
+        for item, options in rule.items():
+            # Lookup key exists so let's look at each individual item
+            if item in resource.config['values']:
+                tf_value = resource.config['values'][item]
+                if tf_value == options:
+                    continue
                 else:
-                    error_message = '[{item}] must equal \'{options}\' but found \'{tf_value}\''.format(
-                        item=item,
-                        options=options,
-                        tf_value=tf_value
-                    )
-    if error_message:
-        resource.add_violation(full_address, error_message)
+                    if isinstance(options, list):
+                        if tf_value not in options:
+                            error_message = '[{item}] must match {options} but found \'{tf_value}\''.format(
+                                item=item,
+                                options=options,
+                                tf_value=tf_value
+                            )
+                    elif isinstance(options, str) or isinstance(options, int):
+                        if tf_value != options:
+                            error_message = '[{item}] must equal \'{options}\' but found \'{tf_value}\''.format(
+                                item=item,
+                                options=options,
+                                tf_value=tf_value
+                            )
+        if error_message:
+            resource.add_violation(full_address, error_message)
 
 
 def attribute_must_equal(rule, resource, attribute_name, full_address):
