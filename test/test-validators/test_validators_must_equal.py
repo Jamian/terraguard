@@ -46,6 +46,25 @@ def test_must_equal_validator_with_bad_tag_value_returns_empty_violations():
     assert(resource.violations == {'test_address.must_equal': ["Tags [TestTag] must equal 'Bleep' but found 'Bloop'"]})
 
 
+def test_must_equal_validator_resource_level():
+    rule = {
+        'TestValue': 'Bleep'
+    }
+
+    config = {
+        'address': 'test_address',
+        'values': {
+            'TestValue': 'Bloop'
+        }
+    }
+
+    resource = AWSResource('TestTag', config)
+    resource.resource_type = 'testresource'
+
+    must_equal(rule, resource)
+    assert(resource.violations == {'test_address.must_equal': ["[TestValue] must equal 'Bleep' but found 'Bloop'"]})
+
+
 def test_must_equal_validator_with_dict():
     rule = {
         'TestTag': 'Bleep'
