@@ -7,7 +7,6 @@ import yaml
 
 from terraguard.resources.aws import AWSResource
 
-
 DEFAULT_PLAN_FILE_NAME = 'terraguard-plan.json'
 
 
@@ -21,11 +20,13 @@ def print_results(resources):
             for violation in violation:
                 print(crayons.red('        {violation}'.format(violation=violation)))
                 total_violations += 1
+            print('')
     print('')
     print('----------------------------------------------------------------')
     print(crayons.yellow('Finished Analyzing.'))
     print('')
-    print(crayons.yellow('Total ruleset violations - ') + crayons.red(total_violations) + crayons.yellow(' accross ') + crayons.cyan(len(resources)) + crayons.yellow(' resources.'))
+    print(crayons.yellow('Total resources - {}'.format(len(resources))))
+    print(crayons.yellow('Total ruleset violations - {}'.format(total_violations)))
     print('----------------------------------------------------------------')
 
 
@@ -45,22 +46,46 @@ def generate_plan():
         file.write(output)
 
 
-@click.command()
-@click.option('--plan-file', required=False, help='Name of the plan file to check')
-@click.option('--out', required=False, help='Output the results to a file')
-def validate(plan_file, out):
-    """Check the plan for any defined rulesets and policies"""
+def load_configs(config_path=None):
+    if config_path:
+        try:
+            master_config = yaml.safe_load(open(config_path))
+        except FileNotFoundError:
+            print(crayons.red('Master config not found at the given path. Please check your --config argument.'))
+            raise
+    else:
+        master_config = {'rulesets': {}}
+
     try:
         config = yaml.safe_load(open(os.path.join(os.getcwd(), 'terraguard.yaml')))
-    except FileNotFoundError as exception:
-        print(crayons.red("No terraguard.yaml configuration file found. Please create one. "))
-        raise
+    except FileNotFoundError:
+        if master_config:
+            print(crayons.red('No project level terraguard.yaml configuration file found. Continuing with master.'))
+            config = {'rulesets': {}}
+        else:
+            print(crayons.red('No project level terraguard.yaml configuration file found and no master defined. Exiting.'))
+            raise
 
-    if not plan_file:
+    # This is pretty rudimentary and allows sub projects to override any key but it is all of nothing.
+    # TODO: Maybe it would be nice to be able to add, not just override?
+    master_config['rulesets'].update(config['rulesets'])
+    return master_config
+
+
+@click.command()
+@click.option('--json-plan-file', required=False, help='Name of the JSON plan file to check')
+@click.option('--out', required=False, help='Output the results to a file')
+@click.option('--master-config', required=False, help='Path to the terraguard config file')
+def validate(json_plan_file, out, master_config):
+    """Check the plan for any defined rulesets and policies"""
+
+    config = load_configs(master_config)
+
+    if not json_plan_file:
         generate_plan()
-        plan_file = DEFAULT_PLAN_FILE_NAME
+        json_plan_file = DEFAULT_PLAN_FILE_NAME
 
-    plan = load_plan(plan_file)
+    plan = load_plan(json_plan_file)
     planned_values_resources = plan['planned_values']['root_module']['resources']
     total_resources = 0
 
