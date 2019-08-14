@@ -15,6 +15,7 @@ setup(
     url='https://github.com/jamian/terraguard',
     author='Jamie West',
     author_email='jamieianwest@hotmail.com',
+    long_description='Safe guard your Terraformed Environment with simple config driven rulesets.',
     license='BSD',
     classifiers=[
         "Development Status :: 5 - Production/Stable",
